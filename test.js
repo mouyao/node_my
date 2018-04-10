@@ -42,4 +42,10 @@ server.listen(9000, '192.168.0.3');
 server.on('close',function(){
     connection.end();
 });
+
+
+
+
+
+
 console.log('listening on port  9000');

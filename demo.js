@@ -1,14 +1,11 @@
-var mysql  = require('mysql');  
- 
+var mysql  = require('mysql');
 var connection = mysql.createConnection({     
       host     :"localhost",
      user     : 'root',
      password : '20180324',
      database: "mysql"
-}); 
- 
+});
 connection.connect();
- 
 var  sql = 'SELECT * FROM `mysql` .mouyao_test order by id desc';
 //查
 connection.query(sql,function (err, result) {
@@ -16,9 +13,7 @@ connection.query(sql,function (err, result) {
           console.log('[SELECT ERROR] - ',err.message);
           return;
         }
-       console.log('--------------------------SELECT----------------------------');
+
        console.log(result);
-       console.log('------------------------------------------------------------\n\n');  
 });
- 
 connection.end();

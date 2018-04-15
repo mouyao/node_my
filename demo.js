@@ -13,7 +13,6 @@ connection.query(sql,function (err, result) {
           console.log('[SELECT ERROR] - ',err.message);
           return;
         }
-
        console.log(result);
 });
 connection.end();

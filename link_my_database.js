@@ -36,14 +36,22 @@ var server = http.createServer(function (req,res){
         req.on('data', function (data) { //node.js中的流操作。通过绑定data操作，来不断的通过这个流累加数据，
             test1+=data;  //这里的chunk就是前端传来的数据,应该是一阵一整的传过来的
         });
-        req.on("end",function(){ //在流上
-            var test=JSON.parse(test1);
-            var  sql = 'INSERT INTO  mouyao_test(id,name,age) VALUES(?,?,?)';
-            var  userAddSql= [test.id,test.name,test.age];
+        req.on("end",function(){   //在流上
+             var test=JSON.parse(test1).params;
+            var  sql = 'INSERT  INTO  student_test(id,name,address,birthday) VALUES(?,?,?,?)';
+            var  userAddSql= [test.id,test.name,test.address,test.birthday];
             connection.query(sql,userAddSql,function(err,rows,fields){
                 //返回插入的结果情况
-                res.end(JSON.stringify(rows));
-                console.log("insert sussess");
+                if(rows){
+                	  rows.code=0;//
+   					  res.end(JSON.stringify(rows));
+                	 console.log("insert sussess"+userAddSql);
+                }
+                if(err){
+                     rows.code=1;
+   					 res.end(JSON.stringify(err));
+                	 console.log("insert fail"+userAddSql);
+                }
             });
         });
     }else if(url_info.pathname ==='/Delete'){  //删除人员信息

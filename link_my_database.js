@@ -28,7 +28,7 @@ var server = http.createServer(function (req,res){
              //这里的分页是后台来分页的，每页都是10个，根据条件来查询；不是前端显示的问题；
 
              res.end(JSON.stringify(obj));//将获取的数据抛给前端；
-             res.end(rows.join);//这个的作用是干什么的？
+             //res.end(rows.join);//这个的作用是干什么的？
         });
     }else if(url_info.pathname ==='/Insert'){  //增加人员信息
         res.writeHead(200, {'Content-Type': 'text/plain'});
@@ -37,7 +37,8 @@ var server = http.createServer(function (req,res){
             test1+=data;  //这里的chunk就是前端传来的数据,应该是一阵一整的传过来的
         });
         req.on("end",function(){   //在流上
-             var test=JSON.parse(test1).params;
+             var test=JSON.parse(test1);
+             console.log(test+"test");
             var  sql = 'INSERT  INTO  student_test(id,name,address,birthday) VALUES(?,?,?,?)';
             var  userAddSql= [test.id,test.name,test.address,test.birthday];
             connection.query(sql,userAddSql,function(err,rows,fields){
@@ -59,13 +60,18 @@ var server = http.createServer(function (req,res){
         var testDelete="";
         req.on('data', function (data) {
             testDelete+=data;  //这里的chunk就是前端传来的数据,应该是一阵一整的传过来的
+            console.log(testDelete+"testDelete");
         });
         req.on("end",function(){
             var test=JSON.parse(testDelete);
-            connection.query('DELETE FROM  mouyao_test where id ='+test.id,function(err,rows,fields){ //错误信息
-                res.end(JSON.stringify(rows));     //返回插入的结果情况，成功后的信息
+            console.log( test+"删除的id号");
+            connection.query('DELETE FROM  student_test  where id ='+test,function(err,rows,fields){ //错误信息
+                
+
+                var result={"code":0,"info":rows};
+                res.end(JSON.stringify(result));     //返回插入的结果情况，成功后的信息
                 //res.end(JSON.stringify(fields));     //返回插入的结果情况
-                console.log("insert sussess");
+                console.log("delete sussess");
             });
         });
     }else if(url_info.pathname ==='/Update'){  //删除人员信息
@@ -76,10 +82,18 @@ var server = http.createServer(function (req,res){
         });
         req.on("end",function(){
             var test=JSON.parse(testUpdate);
-            var updateSql = 'UPDATE  mouyao_test  set  name= ?   where id = ? ';
-            var updateParams = [test.name,test.id];
+            var updateSql = 'UPDATE  student_test  set  name=? , birthday=? , address=?  where id=?';
+            var updateParams = [test.name,test.birthday,test.address,test.id];
             connection.query(updateSql,updateParams,function(err,rows,fields){ //错误信息
-                res.end(JSON.stringify(rows));     //返回插入的结果情况，成功后的信息
+            	if(rows){
+                     var  result={"code":0,"info":rows};
+                      res.end(JSON.stringify(result));     //返回插入的结果情况，成功后的信息
+                        console.log("update success"); 
+            	}
+            	if(err){
+                     console.log("update failed");  
+            	}
+                
             });
         });
     }

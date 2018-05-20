@@ -16,7 +16,7 @@ var connection= mysql.createConnection({
 //开始你的mysql连接
 connection.connect();
 var server = http.createServer(function (req,res){
-    //res.setHeader("Access-Control-Allow-Origin","*");
+    //res.header("Access-Control-Allow-Origin","*");
     //res.setHeader("Access-Control-Allow-Headers","Content-Type,Accept,Authorization");
     //res.setHeader("Access-Control-Allow-Methods","GET,POST,PUT,UPDATE,DELETE");
     var url_info = require('url').parse(req.url,true);

@@ -1,0 +1,11 @@
+{
+  "name": "chatrooms",
+  "version": "0.0.1",
+  "description": "Minimalist multiroom chat server",
+  //配置依赖的模块有哪些，以及版本号
+  "dependencies": {
+    "socket.io": "~0.9.6",
+     "mime": "~1.2.7",
+     "child_process":"~1.0.2"
+  }
+}

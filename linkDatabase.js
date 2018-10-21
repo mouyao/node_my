@@ -1,7 +1,7 @@
 /**
  * Created by USER on 2018-03-22.
  */
-var http = require('http');
+var http = require('http');  //
 var mysql= require('mysql');
 var connection= mysql.createConnection({
     host     :"120.25.158.242",
@@ -14,7 +14,7 @@ var connection= mysql.createConnection({
 connection.connect();
 var server = http.createServer(function (req,res) {
     //如果你发一个GET到http://127.0.0.1:9000/test
-    var url_info = require('url').parse(req.url, true);
+    var url_info = require('url').parse(req.url, true); //加载了url模块
     //检查是不是给/test的request
     if(url_info.pathname === '/test'){
         res.writeHead(200, {'Content-Type': 'text/plain'});
@@ -23,7 +23,6 @@ var server = http.createServer(function (req,res) {
             // res.end(rows.constructor);
             // 输出结果
             res.end(JSON.stringify(rows));
-
             console.log(rows.constructor);
             console.log(typeof(rows));
             res.end(rows.join);

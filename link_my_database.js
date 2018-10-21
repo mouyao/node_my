@@ -21,12 +21,12 @@ var server = http.createServer(function (req,res){
     //res.setHeader("Access-Control-Allow-Methods","GET,POST,PUT,UPDATE,DELETE");
     var url_info = require('url').parse(req.url,true);
     //检查是不是给/test的request
-    if(url_info.pathname === '/getAll'){
+    if(url_info.pathname === '/getAll'){ //查询所有人的信息
         res.writeHead(200, {'Content-Type': 'text/plain'}); 
         connection.query('SELECT * FROM `blkg-show-province-demo` .student_test order by id desc',function(err,rows,fields){
              var obj={total:160,limit:10,books:rows};
              //这里的分页是后台来分页的，每页都是10个，根据条件来查询；不是前端显示的问题；
-
+             console.log(JSON.stringify(obj)+"obj");
              res.end(JSON.stringify(obj));//将获取的数据抛给前端；
              //res.end(rows.join);//这个的作用是干什么的？
         });
@@ -66,15 +66,13 @@ var server = http.createServer(function (req,res){
             var test=JSON.parse(testDelete);
             console.log( test+"删除的id号");
             connection.query('DELETE FROM  student_test  where id ='+test,function(err,rows,fields){ //错误信息
-                
-
                 var result={"code":0,"info":rows};
                 res.end(JSON.stringify(result));     //返回插入的结果情况，成功后的信息
                 //res.end(JSON.stringify(fields));     //返回插入的结果情况
                 console.log("delete sussess");
             });
         });
-    }else if(url_info.pathname ==='/Update'){  //删除人员信息
+    }else if(url_info.pathname ==='/Update'){  //修改人员信息
         res.writeHead(200, {'Content-Type': 'text/plain'});
         var testUpdate="";
         req.on('data', function (data) {
@@ -93,19 +91,36 @@ var server = http.createServer(function (req,res){
             	if(err){
                      console.log("update failed");  
             	}
-                
             });
         });
-    }
-    //这个是用来回复上面那个post的，显示post的数据以表示成功了。你要是有别的目标，自然不需要这一段。
-    else{
+    }else if(url_info.pathname ==='/Check'){
+    	res.writeHead(200,{'Content-Type': 'text/plain'});
+        var testUpdate="";
+        req.on('data', function (data){
+            testUpdate+=data;  //这里的chunk就是前端传来的数据,应该是一阵一整的传过来的
+        });
+        req.on("end",function(){
+            var test=JSON.parse(testUpdate);
+            console.log(test);
+            connection.query('SELECT * FROM student_test where id='+test,function(err,rows,fields){ //错误信息
+            	if(rows){
+                     var  result={"code":0,"info":rows};
+                      res.end(JSON.stringify(result));     //返回插入的结果情况，成功后的信息
+                        console.log("update success"); 
+            	}
+            	if(err){
+                     console.log("update failed");  
+            	}
+            });
+        });
+    }else{
         req.pipe(res);  //流  管道，数据是一点点流过来的；
     }
 });
-server.listen(9000, '127.0.0.1');//将服务以这个端口的形式抛出去，供前端来访问；
+server.listen(8082, '127.0.0.1');//将服务以这个端口的形式抛出去，供前端来访问；
 //在server关闭的时候也关闭mysql连接，避免长连接数据库，造成性能出问题
 server.on('close',function(){
     connection.end();
 });
-console.log('listening on port http://127.0.0.1:9000/');
+console.log('listening on port http://127.0.0.1:8082/');
 
